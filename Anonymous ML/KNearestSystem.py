@@ -3,9 +3,25 @@
 Created on Thu Mar 15 17:42:26 2018
 
 @author: Der Niabs
+
+ML System
+    Helper Object for the protocol
+    Provides access to the ML backend.
+    One per ML System
+    Minimal Parameters - We'll be pre-setting or auto-calculating parameters
+    Basic functions:
+        Train - Input: Data. No output. Parameters set by the helper. 
+        Test - Input: Data. Output: Varies by system.
+        
+    Questions
+        How simple do we want this to be? Could combine the comparator into
+        this, but since the comparator is our ultimate output, we probably
+        want it to be as consistent as possible.
+
+
 """
 from sklearn.neighbors import NearestNeighbors
-import numpy as np
+#import numpy as np
 
 class KNearestSystem:
     
@@ -14,18 +30,18 @@ class KNearestSystem:
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
+        self.nnSys = NearestNeighbors()
 
-
-    def train(data):
-        self.input = data
+    def train(self, data):
+        self.nnSys.fit(data)
         
         
-        
-    def test(data):
+    def test(self, data):
         # No need to save this, we're just going to be outputting results.
-
+        # Hmm... Right, KNN.
+        return self.nnSys.kneighbors(data)
+            
 """
-
 Okay, let's examine a question. Does this need to be a class?
 Probably not, but my OO inclinations tell me to make it one XD
 
@@ -37,15 +53,17 @@ for each run seems reasonable. We can then use other functions to
 compare the two.
 
 Hrm... Cross-fold. Where do / How do / Do we want to handle cross-fold?
-We haven't answered that question quite yet. Not sure how important that
-is yet, we can implement later.
+We haven't answered that question quite yet. See TestController for more rambling
 
 
 Secondary question: Do we want to have a MLSystem superclass?
 
-I'm not sure. We can compare all the anomaly system with each other.
-And if we had classes, then we could 
-But ultimately we're evaluating how these systems behave within themselves.
+I'm not sure. Just might not be relevant to make a superclass. It would be an
+organizational tool, not a computational one. It would be useful in C++, in
+Python I don't think it matters at all. There's no functions that I would want
+to define at the level above this. Yay for weak typing?
+
+On a completely unrelated note, weak typing makes me nervous sometimes XD
 
 """
 
