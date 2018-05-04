@@ -8,4 +8,3 @@ for filename in os.listdir(directory):
 	packets = rdpcap(directory + '/' + filename)
 	for packet in packets:
 		packet_list.append(packet)
-		num_packets += 1
