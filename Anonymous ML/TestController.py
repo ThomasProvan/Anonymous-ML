@@ -7,21 +7,24 @@ Created on Fri Mar  9 03:15:20 2018
 Manages the execution of a single test. Takes in the data-structure and ML system,
 then does necessary data anon & splitting and execution of the ML System. 
 """
+import numpy as np
+
 
 class TestController:
     
     
     def __init__(self, data, system):
-        self.dataSet = data
+        self.dataSet = np.array(data)
         self.system = system
         # Oh the temptation to be lazy here.
         # Because of Python's lazy typing, I only need to define this subclass
         # if I want to XD
 
-    
+# Note on cross-fold: scikit-learn has some cross-fold validation helper functions
 
 
-
+# Hmm... Okay, thought to fiddle with. What about one TestController that we
+# pass ML systems to run?
 
 
 

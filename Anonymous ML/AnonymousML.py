@@ -19,21 +19,49 @@ import TestController
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
-import numpy as np
-import ipaddress
 # Look into paring this down to *exactly* what we need. We're just reading
 # packets and doing some parsing on them.
 
+import numpy as np
+import ipaddress
 
 
-packet_lists = [] #fun with packets!
-packet_list = []
+
+# Going to start with the data in a list, mostly to play around with converting
+# to array. We may not want it to ever be in a list due to memory issues, but
+# we'll see.
+
+#
+dataList = []
+#
+
+# Current Data: IPsrc (int), IPdst (int)
 directory = './Data'
 for filename in os.listdir(directory):
     packets = rdpcap(directory + '/' + filename)
-    packet_lists.append(packets)
     for packet in packets:
-        packet_list.append(packet)
+        dataEntry = []
+        dataEntry.append(int(ipaddress.ip_address(packet[IP].src)))
+        dataEntry.append(int(ipaddress.ip_address(packet[IP].dst)))
+        dataList.append(dataEntry)
+
+
+# Making a ML system and passing to TestController after this point.
+
+kns = KNearestSystem.KNearestSystem()
+knnController = TestController.TestController(dataList, kns)
+
+
+
+# Data formatting notes
+
+# The various scikit-learn libraries expect an 'array like' object.
+# Fortunately, they can correctly convert a list. So, a list-of-lists is a
+# valid object to pass them. We may want to convert to array's at some point
+# for memory reasons, but that can be done hear. Below this, I'll probably
+# just pass inputs through array() as necessary.
+
+
 
 
 """

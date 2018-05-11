@@ -25,7 +25,10 @@ from sklearn.neighbors import NearestNeighbors
 
 class KNearestSystem:
     
-    
+    #TODO: Think about K settings. May want to bump it up higher.
+    # Still need to figure out statistical analysis as well.
+    # May also want to enable multi-core. Looks like it should just be an init
+    # option.
     
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
