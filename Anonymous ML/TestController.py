@@ -3,7 +3,27 @@
 Created on Fri Mar  9 03:15:20 2018
 
 @author: Der Niabs
+
+Manages the execution of a single test. Takes in the data-structure and ML system,
+then does necessary data anon & splitting and execution of the ML System. 
 """
+
+class TestController:
+    
+    
+    def __init__(self, data, system):
+        self.dataSet = data
+        self.system = system
+        # Oh the temptation to be lazy here.
+        # Because of Python's lazy typing, I only need to define this subclass
+        # if I want to XD
+
+    
+
+
+
+
+
 
 
 # Outline time
@@ -62,6 +82,7 @@ Segments
             Should be much fewer of these.
 
 """
+
 
 """
 KNN specific notes.
