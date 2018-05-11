@@ -31,7 +31,7 @@ packet_list = []
 directory = './Data'
 for filename in os.listdir(directory):
     packets = rdpcap(directory + '/' + filename)
-    packets_list.append(packets)
+    packet_lists.append(packets)
     for packet in packets:
         packet_list.append(packet)
 
@@ -39,8 +39,23 @@ for filename in os.listdir(directory):
 """
 for packet in packet_list
     
-int(ipaddress.ip_address(randompacket[IP].src)) ## Converts scapy IP to int
-# To evaluate - is there a better way to do this conersion?
+scapy notes
+
+packet[|LAYER_NAME|] returns a packet with that layer, and all subsequent layers
+
+packet.show() displays fields of the packet
+
+packet.field gives the first field of that name in the packet.
+    Will drill through layers. If multiple have the same name, will return the
+    one in the highest layer.
+    
+packet.time (!!) gives the time (since last epoch) the packet was recieved.
+    Not shown in summary.
+    Warning: packet[IP].time gives the time scapy read in the packet.
+
+int(ipaddress.ip_address(randompacket[IP].src)) ## Converts IP address string
+ to int
+     # To evaluate - is there a better way to do this conversion?
 
 
 
