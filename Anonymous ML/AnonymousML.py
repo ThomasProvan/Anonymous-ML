@@ -35,7 +35,10 @@ import ipaddress
 dataList = []
 #
 
-# Current Data: IPsrc (int), IPdst (int)
+# Current Data: [IP].src (int), [IP].dst (int), [TCP]sport, [TCP]dport,
+#               time (abs, ms)
+# Probably want to remove time eventually, I'm just using it to force a
+# difference. There's... a lot of duplicate entries.
 directory = './Data'
 for filename in os.listdir(directory):
     packets = rdpcap(directory + '/' + filename)
@@ -43,6 +46,9 @@ for filename in os.listdir(directory):
         dataEntry = []
         dataEntry.append(int(ipaddress.ip_address(packet[IP].src)))
         dataEntry.append(int(ipaddress.ip_address(packet[IP].dst)))
+        dataEntry.append(packet.sport)
+        dataEntry.append(packet.dport)
+        dataEntry.append(packet.time)
         dataList.append(dataEntry)
 
 
@@ -61,6 +67,7 @@ knnController = TestController.TestController(dataList, kns)
 # for memory reasons, but that can be done hear. Below this, I'll probably
 # just pass inputs through array() as necessary.
 
+# Current configuration works, it just might be memory inefficient.
 
 
 
@@ -78,7 +85,7 @@ packet.field gives the first field of that name in the packet.
     one in the highest layer.
     
 packet.time (!!) gives the time (since last epoch) the packet was recieved.
-    Not shown in summary.
+    Not in show()
     Warning: packet[IP].time gives the time scapy read in the packet.
 
 int(ipaddress.ip_address(randompacket[IP].src)) ## Converts IP address string
