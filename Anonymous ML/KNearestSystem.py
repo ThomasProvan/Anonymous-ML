@@ -33,7 +33,7 @@ class KNearestSystem:
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
-        self.nnSys = NearestNeighbors()
+        self.nnSys = NearestNeighbors(1000)
 
     def train(self, data):
         self.nnSys.fit(data)

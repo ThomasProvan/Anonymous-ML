@@ -48,7 +48,7 @@ for filename in os.listdir(directory):
         dataEntry.append(int(ipaddress.ip_address(packet[IP].dst)))
         dataEntry.append(packet.sport)
         dataEntry.append(packet.dport)
-        dataEntry.append(packet.time)
+        #dataEntry.append(packet.time)
         dataList.append(dataEntry)
 
 
