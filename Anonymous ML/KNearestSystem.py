@@ -33,7 +33,7 @@ class KNearestSystem:
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
-        self.nnSys = NearestNeighbors(1000)
+        self.nnSys = NearestNeighbors(100)
 
     def train(self, data):
         self.nnSys.fit(data)
@@ -57,7 +57,7 @@ compare the two.
 
 Hrm... Cross-fold. Where do / How do / Do we want to handle cross-fold?
 We haven't answered that question quite yet. See TestController for more rambling
-
+--- sk-learn has some cross-fold functions. Still need to hash out specifics
 
 Secondary question: Do we want to have a MLSystem superclass?
 

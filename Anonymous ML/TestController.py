@@ -8,26 +8,54 @@ Manages the execution of a single test. Takes in the data-structure and ML syste
 then does necessary data anon & splitting and execution of the ML System. 
 """
 import numpy as np
+from sklearn.model_selection import KFold
 
 
 class TestController:
     
-    
-    def __init__(self, data, system):
-        self.dataSet = np.array(data)
-        self.system = system
-        # Oh the temptation to be lazy here.
-        # Because of Python's lazy typing, I only need to define this subclass
-        # if I want to XD
+    # data: un-anonymized data, in array-like format
+    # dataAnon: anonymized, in the same order as data.
+    #   May swap this out for an alg instead later. Uncertain where exactly
+    #   we want to do the anonymization, but I'm thinking we want to do it before
+    #   this stage.
+    def __init__(self, data, dataAnon = None):
+        self.data = np.array(data)
+        self.dataAnon = dataAnon
+        # Generates cross-fold indexes on command. Useable only once without
+        # saving the indecies.
+        # If we want to randomize the data order, do it elsewhere to maintain
+        # the relationship between data and dataAnon.
+        self.kf = KFold(n_splits = 10)
+
+    # mlSys: one of our defined mlSystems. I may make a super class later, but
+    # for now I'm just going to use some lazy typing. Because python.
+    def run(self, mlSys):
+        # Anonymization & cross-fold already done at this step.
+        
+        # Probably want to initialize this to the length of data, store results
+        # by index.
+        results = []
+        
+        # For each split
+        for train_index, test_index in kf.split(data):
+            train = self.data[train_index]
+            test = self.data[test_index]
+            mlSys.train(train)
+            mlSys.test(test)
+            
+
 
 # Note on cross-fold: scikit-learn has some cross-fold validation helper functions
 
 
-# Hmm... Okay, thought to fiddle with. What about one TestController that we
-# pass ML systems to run?
-
-
-
+# Having thrashing problems figuring out the structure... ugh.
+"""
+Hmm... Okay, thought to fiddle with. What about one TestController that we
+pass ML systems to run? 
+    
+Okay, I think I like this structure better the more I think about it... just
+having a lot of thrashing problems lately.
+"""
 
 # Outline time
 

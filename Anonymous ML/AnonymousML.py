@@ -37,8 +37,11 @@ dataList = []
 
 # Current Data: [IP].src (int), [IP].dst (int), [TCP]sport, [TCP]dport,
 #               time (abs, ms)
-# Probably want to remove time eventually, I'm just using it to force a
-# difference. There's... a lot of duplicate entries.
+
+# Remember how knn works, Kri...
+# There aren't a *ton* of duplicates, it's just that there are enough that there
+# are values nearby to each one.
+
 directory = './Data'
 for filename in os.listdir(directory):
     packets = rdpcap(directory + '/' + filename)
@@ -59,6 +62,7 @@ knnController = TestController.TestController(dataList, kns)
 
 
 
+
 # Data formatting notes
 
 # The various scikit-learn libraries expect an 'array like' object.
@@ -68,8 +72,6 @@ knnController = TestController.TestController(dataList, kns)
 # just pass inputs through array() as necessary.
 
 # Current configuration works, it just might be memory inefficient.
-
-
 
 """
 for packet in packet_list
