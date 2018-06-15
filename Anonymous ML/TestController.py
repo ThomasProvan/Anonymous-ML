@@ -25,7 +25,9 @@ class TestController:
         # saving the indecies.
         # If we want to randomize the data order, do it elsewhere to maintain
         # the relationship between data and dataAnon.
-        self.kf = KFold(n_splits = 10)
+        self.kf = KFold(n_splits = 10, shuffle=True)
+        # QUESTION: Shuffle selects a random set of indecies. Does this make sense,
+        #   or should we be testing on continguous data?
 
     # mlSys: one of our defined mlSystems. I may make a super class later, but
     # for now I'm just going to use some lazy typing. Because python.
@@ -34,14 +36,23 @@ class TestController:
         
         # Probably want to initialize this to the length of data, store results
         # by index.
-        results = []
+        results = np.empty([self.data.shape[0], mlSys.result_size])
         
         # For each split
-        for train_index, test_index in kf.split(data):
+        for train_index, test_index in self.kf.split(self.data):
+            print("Train:", train_index, "Test:", test_index)
             train = self.data[train_index]
             test = self.data[test_index]
             mlSys.train(train)
-            mlSys.test(test)
+            result = mlSys.test(test)
+            results[test_index] = mlSys.cleanUp(result, train_index, test_index)
+        
+        
+        
+        # IDEA: Generate non-cross fold results as well? Probably unnecessary,
+        # but may be interesting.
+        
+        return results
             
 
 

@@ -32,11 +32,9 @@ import ipaddress
 # we'll see.
 
 #
-dataList = []
-#
+data = []
+# May want to convert this to ndarray here. 
 
-# Current Data: [IP].src (int), [IP].dst (int), [TCP]sport, [TCP]dport,
-#               time (abs, ms)
 
 # Remember how knn works, Kri...
 # There aren't a *ton* of duplicates, it's just that there are enough that there
@@ -47,19 +45,32 @@ for filename in os.listdir(directory):
     packets = rdpcap(directory + '/' + filename)
     for packet in packets:
         dataEntry = []
-        dataEntry.append(int(ipaddress.ip_address(packet[IP].src)))
-        dataEntry.append(int(ipaddress.ip_address(packet[IP].dst)))
-        dataEntry.append(packet.sport)
-        dataEntry.append(packet.dport)
-        #dataEntry.append(packet.time)
-        dataList.append(dataEntry)
+        dataEntry.append(int(ipaddress.ip_address(packet[IP].src))) #Src IP
+        dataEntry.append(int(ipaddress.ip_address(packet[IP].dst))) #Dst IP
+        dataEntry.append(packet.sport)                              #Src Port
+        dataEntry.append(packet.dport)                              #Dst Port
+        dataEntry.append(packet[IP].len)                            #IP Length
+        #dataEntry.append(packet.time)                               #Timestamp
+        data.append(dataEntry)
 
-
+#QUESTION: Is it useful to feed this into np.unique?
+    """
+    With the initial Berkeley dataset, we've got some backbone traffic in the data.
+    As a result, only a few kinds of 'packets' make up most of our data. Using just
+    IP & Port, roughly 90% (or more) of the traffic is traffic on one of 6 connections.
+        (according to raw packet count)
+    My instinct is generally no, but it might be useful to make KNN's output
+    more sensible. Possibly. I don't know, this may just be an expected result.
+    I'm curious if some of the CRAWDAD data will have similar proprties. I assume
+    it will, if backbone traffic is included. 
+    """
+    
 # Making a ML system and passing to TestController after this point.
 
 kns = KNearestSystem.KNearestSystem()
-knnController = TestController.TestController(dataList, kns)
 
+knnController = TestController.TestController(data)
+# Working out what the constructor looks like. 
 
 
 

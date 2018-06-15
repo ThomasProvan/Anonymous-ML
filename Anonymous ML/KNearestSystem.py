@@ -21,19 +21,25 @@ ML System
 
 """
 from sklearn.neighbors import NearestNeighbors
-#import numpy as np
+import numpy as np
 
 class KNearestSystem:
     
     #TODO: Think about K settings. May want to bump it up higher.
+    #   100 seems... okay? We've got a bit of an outlier problem in the current
+    #   dataset. There are a few connections that dominate the traffic.
     # Still need to figure out statistical analysis as well.
     # May also want to enable multi-core. Looks like it should just be an init
     # option.
     
+    NUM_NEIGH = 100
+    
+    result_size = NUM_NEIGH * 2
+    
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
-        self.nnSys = NearestNeighbors(100)
+        self.nnSys = NearestNeighbors(self.NUM_NEIGH)
 
     def train(self, data):
         self.nnSys.fit(data)
@@ -42,8 +48,22 @@ class KNearestSystem:
     def test(self, data):
         # No need to save this, we're just going to be outputting results.
         # Hmm... Right, KNN.
-        return self.nnSys.kneighbors(data)
-            
+        # TODO: Output. Ideally we want this to be consistent, but KNN has very
+        # different outputs to everything else we'll be looking at...
+        dist, index = self.nnSys.kneighbors(data)
+        return np.concatenate((dist, index), axis=1)
+    
+    # Cleans up result somewhat. May add more stuff here later, but right now
+    # this is *mostly* to account for the weirdness of KNN and instance based
+    # learners. But we want it here so that the controllers don't have to care
+    # about that kind of crap.
+    def cleanUp(self, result, train_index, test_index):
+        for x in range(0,result.shape[0]):
+            for y in range(self.NUM_NEIGH,self.NUM_NEIGH*2):
+                index = int(result[x,y])
+                result[x,y] = train_index[index]
+        return result
+    
 """
 Okay, let's examine a question. Does this need to be a class?
 Probably not, but my OO inclinations tell me to make it one XD
