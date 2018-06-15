@@ -40,7 +40,6 @@ class TestController:
         
         # For each split
         for train_index, test_index in self.kf.split(self.data):
-            print("Train:", train_index, "Test:", test_index)
             train = self.data[train_index]
             test = self.data[test_index]
             mlSys.train(train)

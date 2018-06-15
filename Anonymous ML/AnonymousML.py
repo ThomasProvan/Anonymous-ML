@@ -69,8 +69,12 @@ for filename in os.listdir(directory):
 
 kns = KNearestSystem.KNearestSystem()
 
-knnController = TestController.TestController(data)
-# Working out what the constructor looks like. 
+controller = TestController.TestController(data)
+# Working out what the constructor looks like.
+
+
+knnResults = controller.run(kns)
+ 
 
 
 
