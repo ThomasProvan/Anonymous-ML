@@ -17,6 +17,8 @@ ML System
     One per ML System
     Minimal Parameters - We'll be pre-setting or auto-calculating parameters
     Basic functions:
+        init / constructor -- No input, should initialize the ML system for this
+                                object and set any parameters for it.
         train -     Input: Data, in an NP array.
                     No output. Parameters set by the constructor.
         test -      Input: Data, in an NP array.
@@ -51,16 +53,17 @@ class MLSystem:
     # which behave similarly to C arrays.
     result_size = None
     
-    #def __init__(self):
-        # Constructor should set basic parameters for the ML system, and not
-        # require any input.
+    # Constructor should set basic parameters for the ML system, and not
+    # require any input.
+    def __init__(self):
+        self.trained = False
 
     """
     # Trains the ML system on new data. Should reset the current system to base
     # parameters
     """
     def train(self, data):
-        self.nnSys.fit(data)
+        self.trained = True
       
     """
     Tests the ML system on provided data. Should return the results of the
@@ -69,9 +72,9 @@ class MLSystem:
     to error out before it gets too far in that process)
     """
     def test(self, data):
-        # (I'd check concatenate to see if this works, but this code should never
-        # get run :P )
-        return np.concatenate(self.nnSys.kneighbors(data), axis=1)
+        if not self.trained:
+            raise RuntimeError("ML System not trained before testing")
+        return None
     
     """
     Cleans up result, somewhat. May add more stuff here later, but right now
