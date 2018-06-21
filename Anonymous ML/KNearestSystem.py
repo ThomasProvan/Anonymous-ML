@@ -46,11 +46,11 @@ class KNearestSystem:
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
-        self.nnSys = NearestNeighbors(self.NUM_NEIGH)
+        self.mlSys = NearestNeighbors(self.NUM_NEIGH)
         self.trained = False
 
     def train(self, data):
-        self.nnSys.fit(data)
+        self.mlSys.fit(data)
         self.trained = True
         
         
@@ -61,7 +61,7 @@ class KNearestSystem:
         # different outputs to everything else we'll be looking at...
         if not self.trained:
             raise RuntimeError("ML System not trained before testing")
-        dist, index = self.nnSys.kneighbors(data)
+        dist, index = self.mlSys.kneighbors(data)
         return np.concatenate((dist, index), axis=1)
     
     # Cleans up result somewhat. May add more stuff here later, but right now

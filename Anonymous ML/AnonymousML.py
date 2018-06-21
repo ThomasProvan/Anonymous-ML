@@ -78,16 +78,16 @@ the previous question of 'what do I do with the first one')
 
 
 #QUESTION: Is it useful to feed this into np.unique?
-    """
-    With the initial Berkeley dataset, we've got some backbone traffic in the data.
-    As a result, only a few kinds of 'packets' make up most of our data. Using just
-    IP & Port, roughly 90% (or more) of the traffic is traffic on one of 6 connections.
-        (according to raw packet count)
-    My instinct is generally no, but it might be useful to make KNN's output
-    more sensible. Possibly. I don't know, this may just be an expected result.
-    I'm curious if some of the CRAWDAD data will have similar proprties. I assume
-    it will, if backbone traffic is included. 
-    """
+"""
+With the initial Berkeley dataset, we've got some backbone traffic in the data.
+As a result, only a few kinds of 'packets' make up most of our data. Using just
+IP & Port, roughly 90% (or more) of the traffic is traffic on one of 6 connections.
+    (according to raw packet count)
+My instinct is generally no, but it might be useful to make KNN's output
+more sensible. Possibly. I don't know, this may just be an expected result.
+I'm curious if some of the CRAWDAD data will have similar proprties. I assume
+it will, if backbone traffic is included. 
+"""
     
 # Making a ML system and passing to TestController after this point.
 

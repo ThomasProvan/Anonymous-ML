@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jun 20 18:29:03 2018
+Created on Wed Jun 20 19:22:51 2018
 
 @author: Der Niabs
 
@@ -36,9 +36,10 @@ ML System
     for these functions (except for cleanup). To make a new MLSystem, just copy
     this file and rename the class.
 """
+from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
 
-class MLSystem:
+class KNClassifierSystem:
     
   
     # Size of the result returned by test for a single datapoint. Will vary per
@@ -50,6 +51,8 @@ class MLSystem:
     # require any input.
     def __init__(self):
         self.trained = False
+        #TODO: Consider inputs. Currently leaving it blank, k = 5
+        self.mlSys = KNeighborsClassifier()
 
     """
     # Trains the ML system on new data. Should reset the current system to base
@@ -57,24 +60,24 @@ class MLSystem:
     """
     def train(self, data):
         self.trained = True
+        self.mlSys.fit(data[:, 1:], data[:,0])
       
     """
     Tests the ML system on provided data. Should return the results of the
     classifier / anomaly detection / confidence / distance metric / whatever
     for each instance. Cannot be run before test. (Should probably write something
     to error out before it gets too far in that process)
+    
+    Because None has a reasonable output for KNClassifier, it's set as default
     """
-    def test(self, data):
+    def test(self, data=None):
         if not self.trained:
             raise RuntimeError("ML System not trained before testing")
-        return None
+        return np.concatenate(self.mlSys.kneighbors(data[:,1:]), axis=1)
     
     """
-    Cleans up result, somewhat. May add more stuff here later, but right now
-    this is *mostly* to account for the weirdness of KNN and instance based
-    learners. But we want it here so that the controllers don't have to care
-    about that kind of crap, and if other system specific oddities arise with
-    returning results, we can handle them here.
+    TODO: This can return indexes like KNN. The same cleanup will be required, if we
+    return index.
     """
     def cleanUp(self, result, train_index, test_index):
         return result
