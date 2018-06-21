@@ -40,18 +40,42 @@ data = []
 # There aren't a *ton* of duplicates, it's just that there are enough that there
 # are values nearby to each one.
 
+# For data formatting purposes, the *first* column should be the class, if
+# relevant to the current tests. Any MLSystem doing classification *will* assume
+# the first column is the class of interest when doing any necessary processing.
+
+
 directory = './Data'
 for filename in os.listdir(directory):
     packets = rdpcap(directory + '/' + filename)
     for packet in packets:
         dataEntry = []
-        dataEntry.append(int(ipaddress.ip_address(packet[IP].src))) #Src IP
+        dataEntry.append(packet.dport)                              #Dst Port
         dataEntry.append(int(ipaddress.ip_address(packet[IP].dst))) #Dst IP
         dataEntry.append(packet.sport)                              #Src Port
-        dataEntry.append(packet.dport)                              #Dst Port
+        dataEntry.append(int(ipaddress.ip_address(packet[IP].src))) #Src IP
         dataEntry.append(packet[IP].len)                            #IP Length
         #dataEntry.append(packet.time)                               #Timestamp
         data.append(dataEntry)
+
+"""
+I have completely forgotten what sort of changes I was going to do with the this...
+Other than adjusting it for classification of dport.
+I remember we were going to do something w.r.t time, but now that I'm thinking
+about it I can't remember which one we decided on... and I thought of a third
+way to do it XD
+
+Packets are returned in 'file order'. As long as the file is chronological,
+the time-stamps will be as well. That said, there's an anomaly: What do I do
+with the first packet in the file? 3 options: throw it out, assign it the 'avg'
+value, or assign it '0'.
+        
+Second thing, there's connectionless-diff, where i'm just recording the time
+since last packet in the file, and connection-diff, where I'm recording the time
+since last packet between two particular IP's (this is still easy, though it makes
+the previous question of 'what do I do with the first one')
+"""
+
 
 #QUESTION: Is it useful to feed this into np.unique?
     """

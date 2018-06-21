@@ -13,11 +13,21 @@ from sklearn.model_selection import KFold
 
 class TestController:
     
-    # data: un-anonymized data, in array-like format
-    # dataAnon: anonymized, in the same order as data.
-    #   May swap this out for an alg instead later. Uncertain where exactly
-    #   we want to do the anonymization, but I'm thinking we want to do it before
-    #   this stage.
+    """
+    data: un-anonymized data, in array-like format
+    dataAnon: anonymized, in the same order as data.
+        May swap this out for an alg instead later. Uncertain where exactly
+        we want to do the anonymization, but I'm thinking we want to do it before
+        this stage.
+    Current Data Formatting: the first 'row' of the array is the class, if relevant
+        to the MLSystem. *The MLSystem will handle it if relevant*
+        
+        
+    ... Why does it feel weird to be passing everything through a class that
+    knows literally nothing about what it is doing? It feels correct, it's a
+    controller and connector, but still... weird.
+        
+    """
     def __init__(self, data, dataAnon = None):
         self.data = np.array(data)
         self.dataAnon = dataAnon
