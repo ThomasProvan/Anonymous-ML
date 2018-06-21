@@ -25,12 +25,19 @@ import numpy as np
 
 class KNearestSystem:
     
-    #TODO: Think about K settings. May want to bump it up higher.
+    # Think about K settings. May want to bump it up higher.
     #   100 seems... okay? We've got a bit of an outlier problem in the current
     #   dataset. There are a few connections that dominate the traffic.
     # Still need to figure out statistical analysis as well.
     # May also want to enable multi-core. Looks like it should just be an init
     # option.
+    
+    # Update: getting interpretable results at 100, I think. May still want to
+    # enable multi-core, and other datasets may produce better results at
+    # different values.
+    
+    # Consider adding a function to change parameters, or see if there's a principled
+    # way to set K from a given dataset that we can use instead of manual setting.
     
     NUM_NEIGH = 100
     
@@ -40,9 +47,11 @@ class KNearestSystem:
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
         self.nnSys = NearestNeighbors(self.NUM_NEIGH)
+        self.trained = False
 
     def train(self, data):
         self.nnSys.fit(data)
+        self.trained = True
         
         
     def test(self, data):
@@ -50,6 +59,8 @@ class KNearestSystem:
         # Hmm... Right, KNN.
         # TODO: Output. Ideally we want this to be consistent, but KNN has very
         # different outputs to everything else we'll be looking at...
+        if not self.trained:
+            raise RuntimeError("ML System not trained before testing")
         dist, index = self.nnSys.kneighbors(data)
         return np.concatenate((dist, index), axis=1)
     
