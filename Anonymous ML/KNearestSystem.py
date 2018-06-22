@@ -35,6 +35,7 @@ class KNearestSystem:
     # Update: getting interpretable results at 100, I think. May still want to
     # enable multi-core, and other datasets may produce better results at
     # different values.
+    # Multi core added. It's so satisfying to watch my CPU max out
     
     # Consider adding a function to change parameters, or see if there's a principled
     # way to set K from a given dataset that we can use instead of manual setting.
@@ -46,7 +47,7 @@ class KNearestSystem:
     def __init__(self):
         # Init Garbage Here. Just reminding myself how python works
         # It's been way too long since I wrote code. Way too long.
-        self.mlSys = NearestNeighbors(self.NUM_NEIGH)
+        self.mlSys = NearestNeighbors(n_neighbors = self.NUM_NEIGH, n_jobs=-1)
         self.trained = False
 
     def train(self, data):

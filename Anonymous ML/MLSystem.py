@@ -44,6 +44,8 @@ class MLSystem:
     # Size of the result returned by test for a single datapoint. Will vary per
     # ML system, but we need this value mostly because we're using NP arrays,
     # which behave similarly to C arrays.
+    # TODO: Convert this to a function that takes in (data) as an input.
+    # The classifiers have a variable-size output, based on the # of labels
     result_size = None
     
     # Constructor should set basic parameters for the ML system, and not
@@ -63,6 +65,7 @@ class MLSystem:
     classifier / anomaly detection / confidence / distance metric / whatever
     for each instance. Cannot be run before test. (Should probably write something
     to error out before it gets too far in that process)
+    Must return a matrix of shape (data.shape[0], result_size)
     """
     def test(self, data):
         if not self.trained:

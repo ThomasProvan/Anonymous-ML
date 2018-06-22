@@ -14,8 +14,9 @@ Some of the code in here will be moved to TestController later, when that class
 is more complete.
 """
 
-import KNearestSystem
+import KNearestSystem as KNNSys
 import TestController
+import KNClassifierSystem as KNCSys
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
@@ -39,23 +40,60 @@ data = []
 # Remember how knn works, Kri...
 # There aren't a *ton* of duplicates, it's just that there are enough that there
 # are values nearby to each one.
+# ... okay, maybe there are a ton of duplicates. Kind of. :P
+
+
+diffDict = {}
+
+# Base version of the function. Takes in the keys as seperate inputs,
+# then returns either the difference between the recorded and current time, or
+# None if the keys have not been see before in this order.
+def keyDiff(value, *keys):
+    if keys in diffDict:
+        diff = value - diffDict[keys]
+        diffDict[keys] = value
+        return diff
+    diffDict[keys] = value
+    return None
+
+# ... I was really hoping to never encouter a * notation again. Oh well.
+# Forces the keys into a particular order and **removes duplicates**, then calls
+# keyDiff.
+def keyDiffSet(value, *keys):
+    return keyDiff(value, *tuple(set(keys)))
+
 
 # For data formatting purposes, the *first* column should be the class, if
 # relevant to the current tests. Any MLSystem doing classification *will* assume
 # the first column is the class of interest when doing any necessary processing.
-
-
 directory = './Data'
 for filename in os.listdir(directory):
+    #TODO: Need to do something to resolve diff, or guarantee order with multiple
+    # files. Keep in mind if we are ever using multiples.
     packets = rdpcap(directory + '/' + filename)
     for packet in packets:
+        
+        dstIP = int(ipaddress.ip_address(packet[IP].dst))
+        srcIP = int(ipaddress.ip_address(packet[IP].src))
+        
+        # One-way diff, IP: returns time since last packet sent from src to dst
+#        diff = keyDiff(packet.time, dstIP, srcIP)
+#        if not diff: #If we haven't seen this connection before, throw away packet
+#            continue
+        
+        # Two-way diff, IP: returns time since last packet sent between src & dst
+        diff = keyDiffSet(packet.time, dstIP, srcIP)
+        if not diff: #If we haven't seen this connection before, throw away packet
+            continue
+        
         dataEntry = []
-        dataEntry.append(packet.dport)                              #Dst Port
-        dataEntry.append(int(ipaddress.ip_address(packet[IP].dst))) #Dst IP
-        dataEntry.append(packet.sport)                              #Src Port
-        dataEntry.append(int(ipaddress.ip_address(packet[IP].src))) #Src IP
-        dataEntry.append(packet[IP].len)                            #IP Length
-        #dataEntry.append(packet.time)                               #Timestamp
+        dataEntry.append(packet.dport)      #Dst Port
+        dataEntry.append(dstIP)             #Dst IP
+        dataEntry.append(packet.sport)      #Src Port
+        dataEntry.append(srcIP)             #Src IP
+        dataEntry.append(packet[IP].len)    #IP Length
+        #dataEntry.append(packet.time)      #Timestamp
+        dataEntry.append(diff)              #Current time difference (varies)
         data.append(dataEntry)
 
 """
@@ -91,13 +129,14 @@ it will, if backbone traffic is included.
     
 # Making a ML system and passing to TestController after this point.
 
-kns = KNearestSystem.KNearestSystem()
+kns = KNNSys.KNearestSystem()
+knc = KNCSys.KNClassifierSystem()
 
 controller = TestController.TestController(data)
 # Working out what the constructor looks like.
 
 
-knnResults = controller.run(kns)
+#knnResults = controller.run(kns)
  
 
 

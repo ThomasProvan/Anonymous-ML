@@ -42,17 +42,22 @@ import numpy as np
 class KNClassifierSystem:
     
   
+    NUM_NEIGH = 10
+    
+    
     # Size of the result returned by test for a single datapoint. Will vary per
     # ML system, but we need this value mostly because we're using NP arrays,
     # which behave similarly to C arrays.
+    # TODO: Convert this to a function that takes in (data) as an input.
+    # The classifiers have a variable-size output, based on the # of labels
     result_size = None
     
     # Constructor should set basic parameters for the ML system, and not
     # require any input.
     def __init__(self):
         self.trained = False
-        #TODO: Consider inputs. Currently leaving it blank, k = 5
-        self.mlSys = KNeighborsClassifier()
+        #TODO: Consider inputs.
+        self.mlSys = KNeighborsClassifier(n_neighbors = self.NUM_NEIGH, n_jobs=-1)
 
     """
     # Trains the ML system on new data. Should reset the current system to base
@@ -67,17 +72,26 @@ class KNClassifierSystem:
     classifier / anomaly detection / confidence / distance metric / whatever
     for each instance. Cannot be run before test. (Should probably write something
     to error out before it gets too far in that process)
-    
-    Because None has a reasonable output for KNClassifier, it's set as default
     """
-    def test(self, data=None):
+    def test(self, data):
         if not self.trained:
             raise RuntimeError("ML System not trained before testing")
-        return np.concatenate(self.mlSys.kneighbors(data[:,1:]), axis=1)
+        dist, neigh = self.mlSys.kneighbors(data[:,1:])   
+        predict = self.mlSys.predict(data[:,1:])
+        prob = self.mlSys.predict_proba(data[:,1:])
+        acc = self.mlSys.score(data[:,1:], data[:,0])
+        
+        # So much tasty data! I don't feel the need to return all of this, I just
+        # wanted to see what could be generated.
+        
+        return predict, prob, dist, neigh, acc
     
     """
     TODO: This can return indexes like KNN. The same cleanup will be required, if we
     return index.
+    TODO: Okay, bigger problem that this may need to solve... it *might* be possible
+    for cross-fold to excise a label from the training set. If that happens, this needs to fix the prob.
+    array. Somehow.
     """
     def cleanUp(self, result, train_index, test_index):
         return result

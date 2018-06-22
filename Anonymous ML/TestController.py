@@ -46,6 +46,7 @@ class TestController:
         
         # Probably want to initialize this to the length of data, store results
         # by index.
+        # TODO: Need to change something about how result_size is created.
         results = np.empty([self.data.shape[0], mlSys.result_size])
         
         # For each split
